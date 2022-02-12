@@ -10,6 +10,7 @@ require('dotenv').config();
     ProductModule,
     MongooseModule.forRoot(process.env.MONGO_ATLAS, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     }),
   ],
   controllers: [AppController],

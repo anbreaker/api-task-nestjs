@@ -28,21 +28,23 @@ export class ProductService {
   }
 
   async deleteProduct(productId: string): Promise<Product> {
-    const deletedProduct = await this.productModel.findByIdAndDelete(productId);
+    const deletedProduct = await this.productModel.findOneAndRemove({
+      _id: productId,
+    });
 
-    return await deletedProduct.save();
+    return deletedProduct;
   }
 
   async updateProduct(
     productId: string,
     createProductDTO: CreateProductDTO,
   ): Promise<Product> {
-    const updateProduct = await this.productModel.findByIdAndUpdate(
-      productId,
+    const updateProduct = await this.productModel.findOneAndReplace(
+      { _id: productId },
       createProductDTO,
-      { new: true },
+      { returnOriginal: false },
     );
 
-    return await updateProduct.save();
+    return updateProduct;
   }
 }

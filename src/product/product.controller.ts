@@ -9,6 +9,8 @@ import {
   Body,
   Param,
   NotFoundException,
+  Query,
+  HttpCode,
 } from '@nestjs/common';
 
 import { CreateProductDTO } from './dto/product.dto';
@@ -44,5 +46,40 @@ export class ProductController {
     if (!product) throw new NotFoundException('Product not Found');
 
     return res.status(HttpStatus.OK).json(product);
+  }
+
+  @Delete('/delete')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async deleteProduct(@Query('productId') productId) {
+    const productDeleted = await this.productService.deleteProduct(productId);
+
+    if (!productDeleted) throw new NotFoundException('Product not Found');
+
+    return {
+      message: 'Product Deleted Succesfully',
+      productDeleted,
+    };
+  }
+
+  @Put('/update')
+  @HttpCode(HttpStatus.OK)
+  async updateProduct(
+    @Res() res,
+    @Body() createProductDTO: CreateProductDTO,
+    @Query('productId') productId,
+  ) {
+    const updatedProduct = await this.productService.updateProduct(
+      productId,
+      createProductDTO,
+    );
+
+    if (!updatedProduct) throw new NotFoundException('Product not Found');
+
+    // TODO repair bug... sending put
+    console.log(updatedProduct, 'por aqui<--------------');
+    return {
+      message: 'Product Updated Succesfully',
+      updatedProduct,
+    };
   }
 }
